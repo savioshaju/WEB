@@ -19,8 +19,23 @@ import {
   Zap
 } from 'lucide-react';
 
-const API_BASE_URL = 'http://localhost:5000/api';
-const WS_URL = 'ws://localhost:5000';
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+
+const getWsUrl = () => {
+  if (import.meta.env.VITE_WS_URL) {
+    return import.meta.env.VITE_WS_URL;
+  }
+  if (import.meta.env.VITE_API_BASE_URL) {
+    return import.meta.env.VITE_API_BASE_URL
+      .replace(/^http:/i, 'ws:')
+      .replace(/^https:/i, 'wss:')
+      .replace(/\/api\/?$/i, '');
+  }
+  return 'ws://localhost:5000';
+};
+
+const WS_URL = getWsUrl();
 
 export default function App() {
   const [messages, setMessages] = useState([]);
@@ -43,7 +58,7 @@ export default function App() {
       }
     } catch (err) {
       console.error('Failed to fetch SOS messages:', err);
-      setError('Cannot connect to ResQMesh Backend Server (http://localhost:5000)');
+      setError(`Cannot connect to ResQMesh Backend Server (${API_BASE_URL})`);
     } finally {
       setLoading(false);
     }

@@ -91,6 +91,18 @@ wss.on('connection', (ws) => {
   });
 });
 
+// Root API status endpoint
+app.get('/', (req, res) => {
+  res.json({
+    status: 'ok',
+    service: 'ResQMesh Central Server API',
+    endpoints: {
+      health: '/api/health',
+      sos: '/api/sos'
+    }
+  });
+});
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   const dbStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
