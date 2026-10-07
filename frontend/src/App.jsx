@@ -310,10 +310,8 @@ export default function App() {
           {filteredMessages.length === 0 ? (
             <div className="text-center py-16 px-4 bg-zinc-950/60 border border-dashed border-emerald-900/60 rounded-2xl text-emerald-700 font-mono">
               <Radio className="w-12 h-12 mx-auto mb-3 opacity-30 text-emerald-500" />
-              <h3 className="text-lg font-semibold text-emerald-400">NO SOS MESSAGES RECEIVED YET IN MONGO DB</h3>
-              <p className="text-xs text-emerald-600 max-w-md mx-auto mt-1">
-                When a phone in the ResQMesh BLE network forwards an emergency signal to the gateway, it will persist in MongoDB Atlas and display here in real time.
-              </p>
+              <h3 className="text-lg font-semibold text-emerald-400">NO SOS MESSAGES RECEIVED </h3>
+             
             </div>
           ) : (
             filteredMessages.map((msg) => (
