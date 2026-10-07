@@ -19,18 +19,25 @@ import {
   Zap
 } from 'lucide-react';
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+const rawApiUrl = (
+  import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api'
+).trim();
+
+// Normalize API_BASE_URL so it reliably ends with /api (even if entered without /api)
+const API_BASE_URL = rawApiUrl.replace(/\/+$/, '').endsWith('/api')
+  ? rawApiUrl.replace(/\/+$/, '')
+  : `${rawApiUrl.replace(/\/+$/, '')}/api`;
 
 const getWsUrl = () => {
   if (import.meta.env.VITE_WS_URL) {
     return import.meta.env.VITE_WS_URL;
   }
-  if (import.meta.env.VITE_API_BASE_URL) {
-    return import.meta.env.VITE_API_BASE_URL
+  if (rawApiUrl) {
+    return rawApiUrl
       .replace(/^http:/i, 'ws:')
       .replace(/^https:/i, 'wss:')
-      .replace(/\/api\/?$/i, '');
+      .replace(/\/api\/?$/i, '')
+      .replace(/\/+$/, '');
   }
   return 'ws://localhost:5000';
 };
@@ -50,6 +57,9 @@ export default function App() {
     try {
       setLoading(true);
       const res = await fetch(`${API_BASE_URL}/sos`);
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+      }
       const data = await res.json();
 
       if (data.status === 'success') {
